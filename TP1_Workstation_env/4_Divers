@@ -29,3 +29,15 @@ logs = ml_client.online_deployments.get_logs(
 )
 print(logs)
 
+# Envoyer l’ensemble du trafic vers le nouveau déploiement
+endpoint.traffic = {"blue": 0, "green": 100}
+ml_client.begin_create_or_update(endpoint).result()
+
+# Supprimer l’ancien déploiement
+ml_client.online_deployments.begin_delete(
+    name="blue", endpoint_name=online_endpoint_name
+).result()
+
+# Nettoyer les ressources
+# Si vous ne comptez pas utiliser le point de terminaison et le déploiement à l’issue de ce tutoriel, il est préférable de les supprimer.
+ml_client.online_endpoints.begin_delete(name=online_endpoint_name).result()
