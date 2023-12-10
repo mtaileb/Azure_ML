@@ -1,0 +1,19 @@
+# picking the model to deploy. Here we use the latest version of our registered model
+model = ml_client.models.get(name=registered_model_name, version=latest_model_version)
+
+# define an online deployment using a more powerful instance type
+# if you run into an out of quota error, change the instance_type to a comparable VM that is available.\
+# Learn more on https://azure.microsoft.com/en-us/pricing/details/machine-learning/.
+green_deployment = ManagedOnlineDeployment(
+    name="green",
+    endpoint_name=online_endpoint_name,
+    model=model,
+    instance_type="Standard_F4s_v2",
+    instance_count=1,
+)
+
+# create the online deployment
+# expect the deployment to take approximately 8 to 10 minutes
+green_deployment = ml_client.online_deployments.begin_create_or_update(
+    green_deployment
+).result()
