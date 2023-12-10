@@ -8,7 +8,7 @@ credential = DefaultAzureCredential()
 # Get a handle to the workspace
 ml_client = MLClient(
     credential=credential,
-    subscription_id="36b4ced8-3d59-4bb6-a721-ccb9543909bc",
+    subscription_id="ID_abonnement",
     resource_group_name="mehdi.taileb-rg",
     workspace_name="ws_formation",
 )
