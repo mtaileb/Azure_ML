@@ -1,0 +1,31 @@
+# Mettre à l’échelle le déploiement pour gérer davantage de trafic
+# update definition of the deployment
+green_deployment.instance_count = 2
+
+# update the deployment
+# expect the deployment to take approximately 8 to 10 minutes
+ml_client.online_deployments.begin_create_or_update(green_deployment).result()
+
+
+# Mettre à jour l’allocation du trafic pour les déploiements
+# Vous pouvez répartir le trafic de production entre les déploiements.
+# Dans un premier temps, vous pouvez tester le déploiement green avec des exemples de données,
+# comme vous l’avez fait pour le déploiement blue. Une fois que vous avez testé votre déploiement « green »,
+# allouez à celui-ci un petit pourcentage de trafic.
+endpoint.traffic = {"blue": 80, "green": 20}
+ml_client.online_endpoints.begin_create_or_update(endpoint).result()
+
+# Vous pouvez tester l’allocation de trafic en appelant le point de terminaison plusieurs fois :
+# You can invoke the endpoint several times
+for i in range(30):
+    ml_client.online_endpoints.invoke(
+        endpoint_name=online_endpoint_name,
+        request_file="./deploy/sample-request.json",
+    )
+
+# Examinez les journaux du déploiement green pour vérifier qu’il y a eu des demandes entrantes et que le modèle a bien été scoré.
+logs = ml_client.online_deployments.get_logs(
+    name="green", endpoint_name=online_endpoint_name, lines=50
+)
+print(logs)
+
