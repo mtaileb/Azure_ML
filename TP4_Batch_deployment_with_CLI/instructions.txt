@@ -11,7 +11,7 @@ az ml compute create -n batch-cluster --type amlcompute --min-instances 0 --max-
 
 # Create a batch endpoint:
 # A batch endpoint is an HTTPS endpoint that clients can call to trigger a batch scoring job
-ENDPOINT_NAME="mnist-batch"
+ENDPOINT_NAME="mnist-batchmt123"
 
 # Copy endpoint.yaml (which defines a batch endpoint, which you can include in the CLI command for batch endpoint creation) in local directory:
 wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/endpoint.yml
@@ -25,21 +25,19 @@ az ml model create --name $MODEL_NAME --type "custom_model" --path "deployment-t
 # given model should be executed and how input data must be processed. Batch Endpoints 
 # support scripts created in Python. In this case, we're deploying a model that reads image 
 # files representing digits and outputs the corresponding digit. The scoring script is 
-wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/batch_driver.py deployment-torch/code
+wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/batch_driver.py && mv batch_driver.py deployment-torch/code
 
 # Create an environment where your batch deployment will run. In this case, the
 # dependencies have been captured in a conda.yaml:
-wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/conda.yaml deployment-torch/environment
+wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/conda.yaml && mv conda.yaml deployment-torch/environment
 
 # Create environment from this file:
-wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/env.yaml
+# wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/env.yaml
 
 # Create deployment definition:
 wget https://github.com/mtaileb/Azure_ML/raw/main/TP4_Batch_deployment_with_CLI/deployment.yml deployment-torch
-
 # Create deployment:
 az ml batch-deployment create --file deployment-torch/deployment.yml --endpoint-name $ENDPOINT_NAME --set-default
-
 # Check batch endpoint and deployment details:
 DEPLOYMENT_NAME="mnist-torch-dpl"
 az ml batch-deployment show --name $DEPLOYMENT_NAME --endpoint-name $ENDPOINT_NAME
