@@ -1,0 +1,13 @@
+git clone https://github.com/Azure/azureml-examples --depth 1
+cd azureml-examples/cli
+cd endpoints/batch/deploy-models/mnist-classifier
+
+# Create compute cluster:
+# Batch endpoints run on compute clusters. They support both Azure Machine Learning
+# Compute clusters (AmlCompute) or Kubernetes clusters. Clusters are a shared resource
+# so one cluster can host one or many batch deployments (along with other workloads if desired).
+az ml compute create -n batch-cluster --type amlcompute --min-instances 0 --max-instances 2
+
+# Create a batch endpoint:
+# A batch endpoint is an HTTPS endpoint that clients can call to trigger a batch scoring job
+ENDPOINT_NAME="mnist-batch"
