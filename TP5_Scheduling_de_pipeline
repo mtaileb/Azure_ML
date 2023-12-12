@@ -1,0 +1,62 @@
+Trois possibilités:
+1- Via l'UI de Studio
+
+2- Via Azure CLI:
+$schema: https://azuremlschemas.azureedge.net/latest/schedule.schema.json
+name: simple_recurrence_job_schedule
+display_name: Simple recurrence job schedule
+description: a simple hourly recurrence job schedule
+
+trigger:
+  type: recurrence
+  frequency: day #can be minute, hour, day, week, month
+  interval: 1 #every day
+  schedule:
+    hours: [4,5,10,11,12]
+    minutes: [0,30]
+  start_time: "2022-07-10T10:00:00" # optional - default will be schedule creation time
+  time_zone: "Pacific Standard Time" # optional - default will be UTC
+
+create_job: ./simple-pipeline-job.yml
+# create_job: azureml:simple-pipeline-job
+
+3- Via SDK Python (3.10 v2):
+schedule_name = "simple_sdk_create_schedule_recurrence"
+
+schedule_start_time = datetime.utcnow()
+recurrence_trigger = RecurrenceTrigger(
+    frequency="day",
+    interval=1,
+    schedule=RecurrencePattern(hours=10, minutes=[0, 1]),
+    start_time=schedule_start_time,
+    time_zone=TimeZone.UTC,
+)
+
+job_schedule = JobSchedule(
+    name=schedule_name, trigger=recurrence_trigger, create_job=pipeline_job
+)
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Expication des propriétés ci-dessus:
+
+    (Required) To provide better coding experience, we use RecurrenceTrigger for recurrence schedule.
+
+
+    (Required) frequency specifies the unit of time that describes how often the schedule fires. Can be minute, hour, day, week, month.
+
+    (Required) interval specifies how often the schedule fires based on the frequency, which is the number of time units to wait until the schedule fires again.
+
+    (Optional) schedule defines the recurrence pattern, containing hours, minutes, and weekdays.
+        When frequency is day, pattern can specify hours and minutes.
+        When frequency is week and month, pattern can specify hours, minutes and weekdays.
+        hours should be an integer or a list, from 0 to 23.
+        minutes should be an integer or a list, from 0 to 59.
+        weekdays can be a string or list from monday to sunday.
+        If schedule is omitted, the job(s) will be triggered according to the logic of start_time, frequency and interval.
+
+    (Optional) start_time describes the start date and time with timezone. If start_time is omitted, start_time will be equal to the job created time. If the start time is in the past, the first job will run at the next calculated run time.
+
+    (Optional) end_time describes the end date and time with timezone. If end_time is omitted, the schedule will continue trigger jobs until the schedule is manually disabled.
+
+    (Optional) time_zone specifies the time zone of the recurrence. If omitted, by default is UTC. To learn more about timezone values, see appendix for timezone values (https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-schedule?view=azureml-api-2#appendix).
