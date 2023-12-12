@@ -1,3 +1,4 @@
+AVEC PATTERN DE RECURRENCE:
 Trois possibilités:
 1- Via l'UI de Studio
 
@@ -60,3 +61,37 @@ Expication des propriétés ci-dessus:
     (Optional) end_time describes the end date and time with timezone. If end_time is omitted, the schedule will continue trigger jobs until the schedule is manually disabled.
 
     (Optional) time_zone specifies the time zone of the recurrence. If omitted, by default is UTC. To learn more about timezone values, see appendix for timezone values (https://learn.microsoft.com/en-us/azure/machine-learning/reference-yaml-schedule?view=azureml-api-2#appendix).
+
+
+AVEC CRON:
+Trois possibilités:
+1- Via l'UI de Studio
+
+2- Azure CLI:
+$schema: https://azuremlschemas.azureedge.net/latest/schedule.schema.json
+name: simple_cron_job_schedule
+display_name: Simple cron job schedule
+description: a simple hourly cron job schedule
+
+trigger:
+  type: cron
+  expression: "0 * * * *"
+  start_time: "2022-07-10T10:00:00" # optional - default will be schedule creation time
+  time_zone: "Pacific Standard Time" # optional - default will be UTC
+
+# create_job: azureml:simple-pipeline-job
+create_job: ./simple-pipeline-job.yml
+
+3- Python SDK (3.10 v2):
+schedule_name = "simple_sdk_create_schedule_cron"
+
+schedule_start_time = datetime.utcnow()
+cron_trigger = CronTrigger(
+    expression="15 10 * * *",
+    start_time=schedule_start_time,  # start time
+    time_zone="Eastern Standard Time",  # time zone of expression
+)
+
+job_schedule = JobSchedule(
+    name=schedule_name, trigger=cron_trigger, create_job=pipeline_job
+)
