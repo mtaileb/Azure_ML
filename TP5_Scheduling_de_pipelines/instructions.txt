@@ -39,7 +39,7 @@ job_schedule = JobSchedule(
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Expication des propriétés ci-dessus:
+Explication des propriétés ci-dessus:
 
     (Required) To provide better coding experience, we use RecurrenceTrigger for recurrence schedule.
 
